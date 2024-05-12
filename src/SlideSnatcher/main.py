@@ -22,7 +22,8 @@ if __name__=='__main__':
     skip_frames = frame_rate * 2  # Skip every 2 seconds worth of video
 
     # Progress bar setup
-    pbar = tqdm(total=total_frames, unit='frame')
+    pbar = tqdm(total=total_frames, unit='frame', position=1, leave=True)
+    print("Processing Video... Please wait.")
 
     slide_number = 0
     ret, prev_frame = cap.read()
@@ -49,7 +50,7 @@ if __name__=='__main__':
             print(f'Slide {slide_number} saved as {output_filename}')
             prev_frame_gray = gray_frame
 
-        pbar.update(skip_frames)  # Update the progress bar
+        pbar.update(skip_frames)
 
     cap.release()
     pbar.close()
