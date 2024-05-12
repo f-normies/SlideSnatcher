@@ -3,46 +3,53 @@ import numpy as np
 from PIL import Image
 import argparse
 import sys
+from tqdm import tqdm
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='Extract slides from a video file.')
     parser.add_argument('video_path', type=str, help='Path to the video file')
     parser.add_argument('output_path', type=str, help='Path where the extracted slides will be saved')
-
-    # Parse arguments
     args = parser.parse_args()
 
-    # Open the video file
     cap = cv2.VideoCapture(args.video_path)
+    if not cap.isOpened():
+        print("Error opening video file")
+        sys.exit()
 
-    # Read the first frame
+    # Get total number of frames in the video
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    frame_rate = int(cap.get(cv2.CAP_PROP_FPS))  # Getting the frame rate of the video
+    skip_frames = frame_rate * 2  # Skip every 2 seconds worth of video
+
+    # Progress bar setup
+    pbar = tqdm(total=total_frames, unit='frame')
+
+    slide_number = 0
     ret, prev_frame = cap.read()
     if not ret:
         print("Failed to read video")
         sys.exit()
+
     prev_frame_gray = cv2.cvtColor(prev_frame, cv2.COLOR_BGR2GRAY)
-
-    # Slide counter
-    slide_number = 0
-
     while True:
         ret, frame = cap.read()
         if not ret:
             break
 
-        # Convert frame to grayscale
+        # Skip frames logic
+        cap.set(cv2.CAP_PROP_POS_FRAMES, cap.get(cv2.CAP_PROP_POS_FRAMES) + skip_frames - 1)
+        
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-        # Compute difference and threshold
         diff = cv2.absdiff(prev_frame_gray, gray_frame)
         _, thresh = cv2.threshold(diff, 30, 255, cv2.THRESH_BINARY)
-
-        # Check if the difference is significant enough to consider it a new slide
-        if np.sum(thresh) > 1000000:  # This threshold might need adjustment
+        if np.sum(thresh) > 1000000:
             slide_number += 1
             output_filename = f'{args.output_path}/slide_{slide_number}.png'
             Image.fromarray(frame).save(output_filename)
             print(f'Slide {slide_number} saved as {output_filename}')
             prev_frame_gray = gray_frame
 
+        pbar.update(skip_frames)  # Update the progress bar
+
     cap.release()
+    pbar.close()
