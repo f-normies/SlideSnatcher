@@ -30,8 +30,7 @@ def select_video(video_path):
     
     return selected_video
 
-
-if __name__=='__main__':
+def main():
     parser = argparse.ArgumentParser(description='Extract slides from a video file.')
     parser.add_argument('-v', '--video_path', type=str, default='./videos', help='Directory containing video files')
     parser.add_argument('-o', '--output_path', type=str, default='./slides', help='Directory to save the extracted slides')
@@ -54,13 +53,13 @@ if __name__=='__main__':
     skip_frames = frame_rate * 2
 
     # Progress bar setup
-    pbar = tqdm(total=total_frames, unit='frame', position=1, leave=True)
-    print("Processing Video... Please wait.")
+    pbar = tqdm(total=total_frames, unit='frame', position=0, leave=True)
+    tqdm.write("Processing Video... Please wait.")
 
     slide_number = 0
     ret, prev_frame = cap.read()
     if not ret:
-        print("Failed to read video")
+        tqdm.write("Failed to read video")
         sys.exit()
 
     prev_frame_gray = cv2.cvtColor(prev_frame, cv2.COLOR_BGR2GRAY)
@@ -78,11 +77,15 @@ if __name__=='__main__':
         if np.sum(thresh) > 1000000:
             slide_number += 1
             output_filename = f'{output_directory}/slide_{slide_number}.png'
-            Image.fromarray(frame).save(output_filename)
-            print(f'Slide {slide_number} saved as {output_filename}')
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            Image.fromarray(frame_rgb).save(output_filename)
+            tqdm.write(f'Slide {slide_number} saved as ' + output_filename.replace("\\", "/"))
             prev_frame_gray = gray_frame
 
         pbar.update(skip_frames)
 
     cap.release()
     pbar.close()
+
+if __name__ == '__main__':
+    main()
