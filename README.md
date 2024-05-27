@@ -34,6 +34,12 @@ To use SlideSnatcher, run the following command from the root of the project dir
 python main.py -v path_to_videos_folder -o path_to_output_folder
 ```
 
+If you want to download and process a video directly from a URL, you can pass the URL as the `-v` argument:
+
+```python
+python main.py -v video_url -o path_to_output_folder
+```
+
 You can also run it without any arguments to use default paths:
 
 ```python
