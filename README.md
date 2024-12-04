@@ -1,53 +1,61 @@
 # SlideSnatcher
-## Description
+## Описание
 
-SlideSnatcher is a tool designed to automatically extract slides from video. This utility was developed to address the common problem of accessing presentation materials that are not readily available in slide format after a lecture or meeting.
+SlideSnatcher - это инструмент для автоматического извлечения слайдов из видео. Утилита разработана для решения распространенной проблемы доступа к презентационным материалам, которые не доступны в формате слайдов после лекции или встречи. Программа анализирует видео, определяет значимые изменения между кадрами и сохраняет их как отдельные изображения и/или компилирует в PDF.
 
-## Table of Contents
+## Содержимое
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [License](#license)
+- [Установка](#установка)
+- [Использование](#использование)
+- [Лицензия](#лицензия)
 
-## Installation
+## Установка
 
-To install SlideSnatcher, follow these steps:
+Чтобы установить SlideSnatcher, выполните следующие действия:
 
-1. Clone the repository:
+1. Клонируйте репозиторий:
     ```bash
     git clone https://github.com/yourusername/SlideSnatcher.git
     ```
-2. Navigate to the project directory:
+2. Перейдите в каталог проекта:
     ```bash
     cd SlideSnatcher
     ```
-3. Install the required dependencies:
+3. Установите необходимые зависимости:
     ```bash
     pip install -r requirements.txt
     ```
+4. (Опционально) Установите FFmpeg для обработки AVI файлов:
+    * Windows: [Следуйте этому руководству](https://www.wikihow.com/Install-FFmpeg-on-Windows)
+    * Linux: `sudo apt-get install ffmpeg`
+    * macOS: `brew install ffmpeg`
 
-## Usage
+## Использование
 
-To use SlideSnatcher, run the following command from the root of the project directory:
-
-```python
-python main.py -v path_to_videos_folder -o path_to_output_folder
-```
-
-If you want to download and process a video directly from a URL, you can pass the URL as the `-v` argument:
-
-```python
-python main.py -v video_url -o path_to_output_folder
-```
-
-You can also run it without any arguments to use default paths:
+Чтобы использовать SlideSnatcher, выполните следующую команду из корня каталога проекта:
 
 ```python
 python main.py
 ```
 
-This will start the application, which prompts you to select a video from the default video directory. After selecting a video, the application will extract the slides and save them into the specified output directory.
+Это приведет к запуску приложения, которое предложит вам выбрать видео из каталога видео по умолчанию. После выбора видео приложение извлечет слайды и сохранит их в указанную выходную директорию.
 
-## License
+Если вы хотите загрузить и обработать видео из интернета, вы можете передать URL в качестве аргумента `-v`:
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+```python
+python main.py -v video_url -o path_to_output_folder
+```
+
+Можно также запустить программу указав конкретные пути к видео и папке для обработанных слайдов:
+
+```python
+python main.py -v path_to_videos_folder -o path_to_output_folder
+```
+
+**Дополнительные параметры**
+1. *--no-convert*: Отключить автоматическую конвертацию AVI в MP4
+2. *--threshold VALUE*: Установить порог определения изменений слайдов (по умолчанию: 0.8)
+
+## Лицензия
+
+Этот проект лицензирован под лицензией MIT - подробности смотрите в файле LICENSE.
