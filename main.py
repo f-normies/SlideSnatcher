@@ -46,7 +46,7 @@ def convert_to_mp4(input_video, output_video):
                 f'-b:v 5M '
                 f'-maxrate 10M '
                 f'-bufsize 10M '
-                f'{audio_param}'
+                f'{audio_param} '
                 f'-fps_mode passthrough '
                 f'-threads 8 '
                 f'-y "{output_video}"'
